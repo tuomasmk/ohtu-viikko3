@@ -1,6 +1,8 @@
 package ohtu;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +10,27 @@ import java.util.stream.Collectors;
 import org.apache.http.client.fluent.Request;
 
 public class Main {
+    
+    static private int[] getCourseStats(String code) throws IOException {
+        String courseOverviewUrl = "https://studies.cs.helsinki.fi/courses/%s/stats";
+        String url = String.format(courseOverviewUrl, code);
+        String statsResponse = Request.Get(url).execute().returnContent().asString();
+
+        JsonParser parser = new JsonParser();
+        JsonObject parsittuData = parser.parse(statsResponse).getAsJsonObject();
+        
+        int hour_total = 0;
+        int students = 0;
+        int exercise_total = 0;
+        System.out.println("");
+        for (String key : parsittuData.keySet()) {
+            hour_total += parsittuData.get(key).getAsJsonObject().get("hour_total").getAsInt();
+            students += parsittuData.get(key).getAsJsonObject().get("students").getAsInt();
+            exercise_total += parsittuData.get(key).getAsJsonObject().get("exercise_total").getAsInt();
+        }
+        
+        return new int[] {students, exercise_total, hour_total};
+    }
 
     public static void main(String[] args) throws IOException {
         // ÄLÄ laita githubiin omaa opiskelijanumeroasi
@@ -38,8 +61,6 @@ public class Main {
         
         System.out.println("opiskelijanumero " + studentNr);
         System.out.println("");
-        int exercises = 0;
-        int hours = 0;
         int doneExercises = 0;
         int usedHours = 0;
         List<String> courseNames = Arrays.stream(subs)
@@ -68,6 +89,10 @@ public class Main {
             System.out.println("yhteensä: " + doneExercises + "/"
                 + course.getExercises().stream().mapToInt(e -> e).sum()
                 + " tehtävää " + usedHours + " tuntia");
+            int[] stats = getCourseStats(course.getName());
+            System.out.println("kurssilla yhteensä " + stats[0] + " palautusta"
+                    + ", palautettujen tehtäviä " + stats[1] + " kpl"
+                    + ", aikaa käytetty yhteensä " + stats[2] + " tuntia");
             doneExercises = 0;
             usedHours = 0;
             System.out.println("");
