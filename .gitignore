@@ -2,3 +2,15 @@
 /Kurssistatistiikka/build/
 /Kurssistatistiikka/.gradle/
 /Kurssistatistiikka/bin/
+/HelloCucumber/build/
+/HelloCucumber/.nb-gradle/
+/HelloCucumber/bin/
+/HelloCucumber/.gradle/
+/LoginCucumber/.nb-gradle/
+/LoginCucumber/build/
+/LoginCucumber/bin/
+/LoginCucumber/.gradle/
+/WebLogin/.nb-gradle/
+/WebLogin/.build/
+/WebLogin/bin/
+/WebLogin/.gradle/
